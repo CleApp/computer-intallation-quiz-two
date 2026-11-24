@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>⚡ COMPUTER FUNDAMENTALS · VIBRANT QUIZ</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', 'Poppins', system-ui, -apple-system, sans-serif;
+    }
+    body {
+      min-height: 100vh;
+      background: linear-gradient(145deg, #0b0f1a 0%, #1a1f2f 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem 1rem;
+      position: relative;
+      overflow-x: hidden;
+    }
+    /* vibrant floating orbs */
+    body::before {
+      content: '';
+      position: fixed;
+      width: 80vmax;
+      height: 80vmax;
+      background: radial-gradient(circle, rgba(255, 80, 200, 0.2) 0%, rgba(0, 200, 255, 0.1) 50%, transparent 70%);
+      top: -30vmax;
+      right: -20vmax;
+      border-radius: 50%;
+      z-index: 0;
+      animation: floatGlow 18s infinite alternate ease-in-out;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      width: 70vmax;
+      height: 70vmax;
+      background: radial-gradient(circle, rgba(255, 220, 0, 0.15) 0%, rgba(180, 0, 255, 0.1) 60%, transparent 80%);
+      bottom: -20vmax;
+      left: -20vmax;
+      border-radius: 50%;
+      z-index: 0;
+      animation: floatGlow 22s infinite alternate-reverse ease-in-out;
+    }
+    @keyframes floatGlow {
+      0% { transform: translate(0, 0) scale(1); opacity: 0.6; }
+      100% { transform: translate(5%, 5%) scale(1.2); opacity: 1; }
+    }
+
+    .quiz-container {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 850px;
+      background: rgba(18, 22, 35, 0.75);
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      border-radius: 3rem 3rem 2rem 2rem;
+      border: 2px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 30px 50px rgba(0, 0, 0, 0.6), 0 0 0 2px rgba(255, 0, 255, 0.1) inset, 0 0 40px rgba(0, 255, 255, 0.2);
+      padding: 2rem 2rem 2rem;
+      transition: all 0.2s;
+    }
+
+    /* header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo h1 {
+      font-size: 1.9rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #ffdf6b, #ff5ecb, #6bcbff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 0 20px rgba(255, 100, 255, 0.5);
+      line-height: 1.2;
+    }
+    .logo span {
+      font-size: 2rem;
+      filter: drop-shadow(0 0 8px #ffbe3c);
+    }
+    .streak-badge {
+      background: #1f2538;
+      padding: 0.5rem 1.2rem;
+      border-radius: 60px;
+      border: 1px solid #fe5ecd;
+      box-shadow: 0 0 15px #fe5ecd66;
+      font-weight: 700;
+      color: #ffe6f7;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 1.1rem;
+    }
+    .streak-badge span {
+      color: #ffbe3c;
+      font-size: 1.5rem;
+    }
+
+    /* progress + question counter */
+    .progress-area {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.2rem;
+      color: #bec8dd;
+      font-weight: 500;
+      padding: 0 0.2rem;
+    }
+    .q-counter {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 0.3rem 1rem;
+      border-radius: 40px;
+      font-size: 0.95rem;
+      border: 1px solid #ffffff22;
+    }
+    .progress-bar-bg {
+      width: 200px;
+      height: 8px;
+      background: #2c3142;
+      border-radius: 30px;
+      overflow: hidden;
+      box-shadow: inset 0 2px 5px #00000055;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #ffd966, #ff5ecb, #4dd0ff);
+      border-radius: 30px;
+      transition: width 0.3s ease;
+      box-shadow: 0 0 12px #ff5ecb;
+    }
+
+    /* diagnostic tag */
+    .diagnostic {
+      display: inline-block;
+      background: #2f2a4a;
+      color: #b8b0ff;
+      padding: 0.3rem 1rem;
+      border-radius: 40px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      border: 1px solid #8a6eff;
+      margin-bottom: 1.2rem;
+      box-shadow: 0 0 15px #8a6eff33;
+    }
+
+    /* question box */
+    .question-text {
+      font-size: 1.7rem;
+      font-weight: 700;
+      line-height: 1.4;
+      color: #ffffff;
+      margin-bottom: 2rem;
+      text-shadow: 0 0 20px rgba(150, 200, 255, 0.4);
+      word-break: break-word;
+    }
+    .question-text small {
+      font-size: 1rem;
+      color: #bec8dd;
+      font-weight: 400;
+      display: block;
+      margin-top: 0.3rem;
+    }
+
+    /* options grid */
+    .options-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+      margin-bottom: 1.8rem;
+    }
+    .option-btn {
+      background: rgba(30, 35, 55, 0.9);
+      border: 2px solid #3f4660;
+      border-radius: 60px;
+      padding: 1rem 1.5rem;
+      font-size: 1.15rem;
+      font-weight: 500;
+      color: #eef3ff;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 5px 0 #0b0e14;
+      letter-spacing: 0.2px;
+    }
+    .option-btn:hover:not(:disabled) {
+      background: #2f3855;
+      border-color: #b18aff;
+      transform: translateY(-2px);
+      box-shadow: 0 7px 0 #0b0e14, 0 0 20px #b18aff66;
+    }
+    .option-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: translateY(0);
+      box-shadow: 0 2px 0 #0b0e14;
+    }
+    .option-btn.correct {
+      background: #1f6b4a;
+      border-color: #45ffb0;
+      box-shadow: 0 0 25px #45ffb0aa, 0 5px 0 #0a3a28;
+      color: white;
+    }
+    .option-btn.wrong {
+      background: #6b2f3a;
+      border-color: #ff6580;
+      box-shadow: 0 0 20px #ff6580aa, 0 5px 0 #3a0a14;
+    }
+    .option-btn .letter {
+      background: #2a3147;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: #b8b0ff;
+      border: 1px solid #5a5f80;
+    }
+
+    /* feedback message */
+    .feedback {
+      font-size: 1.1rem;
+      font-weight: 500;
+      padding: 1rem 1.5rem;
+      border-radius: 60px;
+      margin-bottom: 1.2rem;
+      display: none;
+      align-items: center;
+      gap: 12px;
+      background: #1e2230;
+      border-left: 10px solid #ffbe3c;
+      animation: pop 0.2s ease;
+    }
+    @keyframes pop {
+      0% { transform: scale(0.95); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .feedback.show {
+      display: flex;
+    }
+    .feedback.correct-fb {
+      border-left-color: #45ffb0;
+      background: #173a2e;
+    }
+    .feedback.wrong-fb {
+      border-left-color: #ff6580;
+      background: #3e1e26;
+    }
+    .feedback .icon {
+      font-size: 1.8rem;
+    }
+
+    /* next button */
+    .next-btn {
+      background: linear-gradient(135deg, #ff5ecb, #a05eff);
+      border: none;
+      padding: 1.2rem 2rem;
+      font-size: 1.4rem;
+      font-weight: 800;
+      border-radius: 60px;
+      color: white;
+      cursor: pointer;
+      width: 100%;
+      box-shadow: 0 8px 0 #4d1d7a, 0 0 30px #ff5ecb99;
+      transition: all 0.08s linear;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 5px #00000055;
+    }
+    .next-btn:active {
+      transform: translateY(5px);
+      box-shadow: 0 3px 0 #4d1d7a, 0 0 40px #ff5ecb;
+    }
+    .next-btn:disabled {
+      opacity: 0.4;
+      transform: translateY(5px);
+      box-shadow: 0 3px 0 #4d1d7a;
+      cursor: not-allowed;
+    }
+
+    /* result screen */
+    .result-screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 1rem 0;
+    }
+    .result-screen.active {
+      display: flex;
+    }
+    .result-emoji {
+      font-size: 5rem;
+      margin-bottom: 0.5rem;
+      filter: drop-shadow(0 0 25px #ffbe3c);
+    }
+    .result-title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ffdf6b, #ff5ecb, #6bcbff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 0.5rem;
+    }
+    .result-score {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin: 0.5rem 0 1rem;
+    }
+    .result-score span {
+      color: #ffbe3c;
+      font-size: 2.8rem;
+    }
+    .triage-box {
+      background: #1b1f2e;
+      border-radius: 2rem;
+      padding: 1.5rem;
+      width: 100%;
+      text-align: left;
+      margin: 1.5rem 0;
+      border: 1px solid #414a66;
+      box-shadow: 0 0 30px #00000055;
+    }
+    .triage-box h3 {
+      color: #ffbe3c;
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .triage-box ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+    .triage-box li {
+      background: #252b3d;
+      padding: 0.7rem 1.2rem;
+      border-radius: 60px;
+      color: #d6e2ff;
+      font-weight: 500;
+      border-left: 6px solid #b18aff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .restart-btn {
+      background: #2a3147;
+      border: 2px solid #b18aff;
+      padding: 1rem 2rem;
+      font-size: 1.2rem;
+      font-weight: 700;
+      border-radius: 60px;
+      color: #d6c6ff;
+      cursor: pointer;
+      transition: all 0.15s;
+      width: 100%;
+      box-shadow: 0 5px 0 #121624;
+    }
+    .restart-btn:hover {
+      background: #3a4160;
+      border-color: #ffbe3c;
+      color: #ffea9e;
+      box-shadow: 0 5px 0 #121624, 0 0 25px #ffbe3c66;
+    }
+
+    .hidden { display: none; }
+
+    @media (max-width: 600px) {
+      .quiz-container { padding: 1.5rem 1rem; }
+      .question-text { font-size: 1.3rem; }
+      .option-btn { font-size: 1rem; padding: 0.9rem 1rem; }
+      .logo h1 { font-size: 1.4rem; }
+      .progress-bar-bg { width: 120px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container" id="quizContainer">
+    <!-- HEADER -->
+    <div class="header">
+      <div class="logo">
+        <span>⚡</span>
+        <h1>FUNDAMENTALS<br>QUIZ</h1>
+      </div>
+      <div class="streak-badge" id="streakBadge">
+        <span>🔥</span> <span id="streakCount">0</span> streak
+      </div>
+    </div>
+
+    <!-- PROGRESS -->
+    <div class="progress-area">
+      <div class="q-counter" id="qCounter">Question 1 / 18</div>
+      <div class="progress-bar-bg">
+        <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+      </div>
+    </div>
+
+    <!-- DIAGNOSTIC TAG -->
+    <div class="diagnostic" id="diagnosticTag">Basic Operations</div>
+
+    <!-- QUESTION -->
+    <div class="question-text" id="questionText">
+      Loading question...
+    </div>
+
+    <!-- OPTIONS -->
+    <div class="options-grid" id="optionsGrid"></div>
+
+    <!-- FEEDBACK -->
+    <div class="feedback" id="feedbackMessage">
+      <span class="icon">✅</span>
+      <span id="feedbackText">Correct!</span>
+    </div>
+
+    <!-- NEXT BUTTON -->
+    <button class="next-btn" id="nextBtn" disabled>NEXT ➡️</button>
+
+    <!-- RESULT SCREEN (hidden initially) -->
+    <div class="result-screen" id="resultScreen">
+      <div class="result-emoji" id="resultEmoji">🎉</div>
+      <div class="result-title">QUIZ COMPLETE!</div>
+      <div class="result-score" id="resultScore">0 / 18</div>
+      <div class="triage-box" id="triageBox">
+        <h3>🎯 STUDY TRIAGE</h3>
+        <ul id="triageList">
+          <!-- filled by js -->
+        </ul>
+      </div>
+      <button class="restart-btn" id="restartBtn">🔄 PLAY AGAIN</button>
+    </div>
+  </div>
+
+  <script>
+    // ---------- QUESTION BANK (20+ questions, randomized) ----------
+    const questionBank = [
+      // Q1
+      {
+        diagnostic: "Basic Operations",
+        question: "Which of the following is the correct order of the basic operations of a computer?",
+        options: ["Input → Processing → Output → Storage", "Output → Input → Storage → Processing", "Storage → Output → Input → Processing", "Processing → Input → Output → Storage"],
+        correct: 0,
+        explanation: "The classic IPO+Storage cycle: Input → Processing → Output → Storage."
+      },
+      // Q2
+      {
+        diagnostic: "Relevance of Computers",
+        question: "Which of these is NOT a primary reason computers are relevant in modern society?",
+        options: ["Speed and accuracy in calculations", "Automating repetitive tasks", "Replacing human judgment entirely in all decisions", "Storing and retrieving large amounts of data"],
+        correct: 2,
+        explanation: "Computers assist but don't fully replace human judgment. 'Entirely/all' is a trap."
+      },
+      // Q3
+      {
+        diagnostic: "History of Computers",
+        question: "Who is widely credited as the 'father of the computer' for designing the Analytical Engine?",
+        options: ["Alan Turing", "Charles Babbage", "John von Neumann", "Blaise Pascal"],
+        correct: 1,
+        explanation: "Charles Babbage designed the Analytical Engine. Turing = computing theory; von Neumann = stored-program."
+      },
+      // Q4
+      {
+        diagnostic: "Number Bases",
+        question: "Add the binary numbers: 1011₂ + 1101₂ = ?",
+        options: ["11000₂", "10100₂", "11010₂", "10001₂"],
+        correct: 0,
+        explanation: "1011₂ (11) + 1101₂ (13) = 24₁₀ = 11000₂."
+      },
+      // Q5
+      {
+        diagnostic: "Number Bases",
+        question: "Subtract: 1100₂ − 0111₂ = ?",
+        options: ["0101₂", "0100₂", "0110₂", "0011₂"],
+        correct: 0,
+        explanation: "1100₂ (12) − 0111₂ (7) = 5₁₀ = 0101₂."
+      },
+      // Q6
+      {
+        diagnostic: "Number Bases",
+        question: "Convert 156₁₀ (decimal) to base 2 (binary).",
+        options: ["10011100₂", "10011010₂", "10101100₂", "11001010₂"],
+        correct: 0,
+        explanation: "156 = 128 + 16 + 8 + 4 = 10011100₂."
+      },
+      // Q7
+      {
+        diagnostic: "Semiconductors",
+        question: "A semiconductor's conductivity lies between that of:",
+        options: ["A conductor and a superconductor", "A conductor and an insulator", "An insulator and a vacuum", "A metal and a superconductor"],
+        correct: 1,
+        explanation: "Semiconductors sit between conductors (copper) and insulators (rubber)."
+      },
+      // Q8
+      {
+        diagnostic: "Semiconductors",
+        question: "Spot the trap: 'Pure (intrinsic) silicon at room temperature is a very good conductor of electricity.'",
+        options: ["True", "False — it's a poor conductor until doped or energized"],
+        correct: 1,
+        explanation: "Pure silicon is a poor conductor. Conductivity improves with doping or energy."
+      },
+      // Q9
+      {
+        diagnostic: "Transistors",
+        question: "In computers, transistors function primarily as:",
+        options: ["Power supplies", "Electronic switches and amplifiers", "Storage disks", "Display drivers"],
+        correct: 1,
+        explanation: "Transistors are switches/amplifiers and the building blocks of CPUs."
+      },
+      // Q10
+      {
+        diagnostic: "Integrated Components",
+        question: "An integrated circuit (IC) is best described as:",
+        options: ["A single transistor on a chip", "A complete circuit miniaturized onto a single semiconductor chip", "A type of power supply unit", "A mechanical relay assembly"],
+        correct: 1,
+        explanation: "An IC integrates many components on one chip — not just a single transistor."
+      },
+      // Q11
+      {
+        diagnostic: "Levels of Integration",
+        question: "Match the acronym to the correct description: 1. SSI  2. MSI  3. LSI  4. VLSI  5. ULSI. Which option gives the correct order for 1–5?",
+        options: ["B, E, D, A, C", "B, D, E, C, A", "E, B, A, D, C", "B, E, A, D, C"],
+        correct: 0,
+        explanation: "SSI (Small) → MSI (Medium) → LSI (Large) → VLSI (Very Large) → ULSI (Ultra). Mnemonic: Some Men Love Very Useful chips."
+      },
+      // Q12
+      {
+        diagnostic: "Characteristics & Limitations",
+        question: "Which of the following is a limitation of computer systems?",
+        options: ["They can process data at high speed", "They can store huge amounts of data", "They cannot make independent decisions or exercise common sense", "They can work continuously without fatigue"],
+        correct: 2,
+        explanation: "Computers lack independent judgment/common sense. The other options are strengths."
+      },
+      // Q13
+      {
+        diagnostic: "Firmware & Software",
+        question: "Spot the trap: 'Firmware is a type of hardware because it's permanently installed in the machine.'",
+        options: ["True", "False — firmware is software stored in hardware (e.g., ROM/BIOS)"],
+        correct: 1,
+        explanation: "Firmware is software embedded in hardware. 'Permanently installed' is the trap."
+      },
+      // Q14
+      {
+        diagnostic: "BIOS",
+        question: "BIOS configuration settings are stored in:",
+        options: ["The RAM module", "The CMOS chip", "The hard disk drive", "The CPU cache"],
+        correct: 1,
+        explanation: "BIOS settings live in CMOS. The firmware itself is in ROM/flash."
+      },
+      // Q15
+      {
+        diagnostic: "BIOS/UEFI",
+        question: "Firmware is typically modified/configured through:",
+        options: ["The operating system's file manager", "The BIOS/UEFI setup utility", "The device manager in Windows only", "A compiler"],
+        correct: 1,
+        explanation: "Firmware is modified in the BIOS/UEFI setup utility."
+      },
+      // Q16
+      {
+        diagnostic: "CPU",
+        question: "CPU stands for:",
+        options: ["Central Processing Unit", "Computer Power Unit", "Central Program Utility", "Core Processing Unifier"],
+        correct: 0,
+        explanation: "CPU = Central Processing Unit. The 'brain' of the computer."
+      },
+      // Q17
+      {
+        diagnostic: "RAM",
+        question: "RAM stands for:",
+        options: ["Read Access Memory", "Random Access Memory", "Rapid Access Module", "Read-Only Auxiliary Memory"],
+        correct: 1,
+        explanation: "RAM = Random Access Memory. Volatile (loses data on power-off)."
+      },
+      // Q18
+      {
+        diagnostic: "Storage Speed",
+        question: "Which statement about storage speed is correct?",
+        options: ["HDDs are faster than SSDs because they spin", "SSDs are faster than HDDs because they have no moving parts", "Both are identical in speed", "Speed depends only on the motherboard brand"],
+        correct: 1,
+        explanation: "SSDs use flash memory (no moving parts) → faster than HDDs."
+      },
+      // Q19
+      {
+        diagnostic: "Motherboard",
+        question: "Which component is the main circuit board that connects the CPU, RAM, storage, and other peripherals?",
+        options: ["The power supply unit", "The motherboard", "The graphics card", "The heat sink"],
+        correct: 1,
+        explanation: "The motherboard is the main circuit board connecting all components."
+      },
+      // Q20
+      {
+        diagnostic: "Classification of Computers",
+        question: "Which classification is based on size and processing power from largest to smallest?",
+        options: ["Supercomputer → Mainframe → Minicomputer → Microcomputer", "Microcomputer → Minicomputer → Mainframe → Supercomputer", "Mainframe → Supercomputer → Microcomputer → Minicomputer", "Minicomputer → Microcomputer → Supercomputer → Mainframe"],
+        correct: 0,
+        explanation: "Size/power order: Supercomputer → Mainframe → Minicomputer → Microcomputer."
+      }
+    ];
+
+    // ---------- STATE ----------
+    let shuffledQuestions = [];          // array of question objects (shuffled)
+    let currentIndex = 0;               // 0..n-1
+    let score = 0;
+    let streak = 0;
+    let answered = false;              // current question answered?
+    let correctAnswerIndex = -1;
+
+    // DOM elements
+    const quizContainer = document.getElementById('quizContainer');
+    const questionText = document.getElementById('questionText');
+    const optionsGrid = document.getElementById('optionsGrid');
+    const diagnosticTag = document.getElementById('diagnosticTag');
+    const nextBtn = document.getElementById('nextBtn');
+    const feedbackMessage = document.getElementById('feedbackMessage');
+    const feedbackText = document.getElementById('feedbackText');
+    const qCounter = document.getElementById('qCounter');
+    const progressFill = document.getElementById('progressFill');
+    const streakCount = document.getElementById('streakCount');
+    const resultScreen = document.getElementById('resultScreen');
+    const resultEmoji = document.getElementById('resultEmoji');
+    const resultScore = document.getElementById('resultScore');
+    const triageList = document.getElementById('triageList');
+    const restartBtn = document.getElementById('restartBtn');
+
+    // Hide result screen initially
+    resultScreen.classList.remove('active');
+
+    // ---------- UTILS ----------
+    function shuffleArray(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    // Reset / start quiz
+    function startQuiz() {
+      // Shuffle questions and take 18 (or fewer if bank smaller)
+      const count = Math.min(18, questionBank.length);
+      shuffledQuestions = shuffleArray([...questionBank]).slice(0, count);
+      currentIndex = 0;
+      score = 0;
+      streak = 0;
+      answered = false;
+      updateStreakDisplay();
+      resultScreen.classList.remove('active');
+      quizContainer.style.display = 'block';
+      // Hide result screen children or just re-show quiz
+      loadQuestion();
+    }
+
+    // Load current question
+    function loadQuestion() {
+      if (currentIndex >= shuffledQuestions.length) {
+        showResult();
+        return;
+      }
+      answered = false;
+      const q = shuffledQuestions[currentIndex];
+      correctAnswerIndex = q.correct;
+
+      // Update UI
+      diagnosticTag.textContent = q.diagnostic;
+      questionText.textContent = q.question;
+
+      // Build options
+      optionsGrid.innerHTML = '';
+      q.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerHTML = `<span class="letter">${String.fromCharCode(65 + idx)}</span> ${opt}`;
+        btn.dataset.index = idx;
+        btn.addEventListener('click', () => selectAnswer(idx, btn));
+        optionsGrid.appendChild(btn);
+      });
+
+      // Reset next button & feedback
+      nextBtn.disabled = true;
+      feedbackMessage.classList.remove('show', 'correct-fb', 'wrong-fb');
+      // Update counter & progress
+      qCounter.textContent = `Question ${currentIndex + 1} / ${shuffledQuestions.length}`;
+      const progressPercent = ((currentIndex) / shuffledQuestions.length) * 100;
+      progressFill.style.width = `${progressPercent}%`;
+
+      // Enable option buttons (in case)
+      document.querySelectorAll('.option-btn').forEach(btn => btn.disabled = false);
+    }
+
+    // Handle answer selection
+    function selectAnswer(selectedIdx, selectedBtn) {
+      if (answered) return;
+      answered = true;
+      const q = shuffledQuestions[currentIndex];
+      const isCorrect = selectedIdx === correctAnswerIndex;
+
+      // Disable all options
+      document.querySelectorAll('.option-btn').forEach(btn => btn.disabled = true);
+
+      // Mark correct/wrong
+      if (isCorrect) {
+        selectedBtn.classList.add('correct');
+        score++;
+        streak++;
+        feedbackMessage.classList.add('show', 'correct-fb');
+        feedbackText.textContent = `✅ Correct! ${q.explanation}`;
+        feedbackMessage.querySelector('.icon').textContent = '✅';
+      } else {
+        selectedBtn.classList.add('wrong');
+        // Also mark correct option
+        document.querySelectorAll('.option-btn').forEach(btn => {
+          if (parseInt(btn.dataset.index) === correctAnswerIndex) {
+            btn.classList.add('correct');
+          }
+        });
+        streak = 0;
+        feedbackMessage.classList.add('show', 'wrong-fb');
+        feedbackText.textContent = `❌ Not quite. ${q.explanation}`;
+        feedbackMessage.querySelector('.icon').textContent = '❌';
+      }
+
+      updateStreakDisplay();
+      // Enable next button
+      nextBtn.disabled = false;
+    }
+
+    // Update streak display
+    function updateStreakDisplay() {
+      streakCount.textContent = streak;
+    }
+
+    // Next question
+    function goToNext() {
+      if (!answered) return;
+      currentIndex++;
+      if (currentIndex < shuffledQuestions.length) {
+        loadQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    // Show result screen
+    function showResult() {
+      // Hide quiz main parts, show result
+      quizContainer.style.display = 'block'; // keep container
+      // We'll hide everything inside except result
+      // Easier: hide header, progress, diagnostic, question, options, feedback, next
+      document.querySelector('.header').style.display = 'none';
+      document.querySelector('.progress-area').style.display = 'none';
+      diagnosticTag.style.display = 'none';
+      questionText.style.display = 'none';
+      optionsGrid.style.display = 'none';
+      feedbackMessage.style.display = 'none';
+      nextBtn.style.display = 'none';
+
+      // Show result screen
+      resultScreen.classList.add('active');
+      const total = shuffledQuestions.length;
+      resultScore.textContent = `${score} / ${total}`;
+      let emoji = '🎉';
+      if (score === total) emoji = '🏆';
+      else if (score >= total * 0.8) emoji = '🔥';
+      else if (score >= total * 0.5) emoji = '💪';
+      else emoji = '📚';
+      resultEmoji.textContent = emoji;
+
+      // Build triage list (simple, based on performance)
+      triageList.innerHTML = '';
+      const items = [
+        '🥇 Master FIRST: CPU, RAM, BIOS/CMOS, SSD vs HDD, IPO cycle, number bases',
+        '🪤 TRAPS: Firmware is software! Pure silicon is a poor conductor!',
+        '⚡ QUICK WINS: Babbage, transistor = switch, IC = circuit on chip, SSI→MSI→LSI→VLSI→ULSI, motherboard, super→mainframe→mini→micro'
+      ];
+      // Add a custom note based on score
+      if (score === total) {
+        items.unshift('🌟 PERFECT! You are quiz-ready. Just skim the trap list!');
+      } else if (score >= total * 0.7) {
+        items.unshift('💪 Solid! Review the missed topics and the trap list.');
+      } else {
+        items.unshift('📖 Focus on the "Master FIRST" list, then retake this quiz.');
+      }
+      items.forEach(text => {
+        const li = document.createElement('li');
+        li.textContent = text;
+        triageList.appendChild(li);
+      });
+    }
+
+    // Restart everything
+    function restartQuiz() {
+      // Show all original elements
+      document.querySelector('.header').style.display = 'flex';
+      document.querySelector('.progress-area').style.display = 'flex';
+      diagnosticTag.style.display = 'inline-block';
+      questionText.style.display = 'block';
+      optionsGrid.style.display = 'flex';
+      feedbackMessage.style.display = 'none'; // will be toggled
+      nextBtn.style.display = 'block';
+      resultScreen.classList.remove('active');
+      // Reset state and shuffle again
+      startQuiz();
+    }
+
+    // ---------- EVENT LISTENERS ----------
+    nextBtn.addEventListener('click', goToNext);
+    restartBtn.addEventListener('click', restartQuiz);
+
+    // Initialize quiz on page load
+    startQuiz();
+
+    // Additional style fix for result: show feedback only when class show
+    // default feedback display none via CSS
+  </script>
+</body>
+</html>
